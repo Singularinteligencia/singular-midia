@@ -19,9 +19,15 @@ def story(capa, kick, titulo, saida, rotulo="NOVO NO FEED"):
     tracked(d, (90, 250), rotulo, f(BOLD, 34), ORANGE, 8)
     d.rectangle([90, 304, 190, 309], fill=ORANGE)
     y = 360
-    for ln in titulo:
-        d.text((90, y), ln[0], font=f(BOLD, 64), fill=ln[1]); y += 78
-    c = Image.open(capa).convert("RGB"); larg = 760; c = c.resize((larg, int(c.height * larg / c.width)), Image.LANCZOS)
+    fo = f(BOLD, 64)
+    for txt, cor in titulo:
+        palavras, cur = txt.split(), ""
+        for w_ in palavras:
+            t = (cur + " " + w_).strip()
+            if d.textlength(t, font=fo) <= W - 180 or not cur: cur = t
+            else: d.text((90, y), cur, font=fo, fill=cor); y += 78; cur = w_
+        if cur: d.text((90, y), cur, font=fo, fill=cor); y += 78
+    c = Image.open(capa).convert("RGB"); disp = (H - 330) - (y + 50) - 110; larg = min(760, int(disp * c.width / c.height)); c = c.resize((larg, int(c.height * larg / c.width)), Image.LANCZOS)
     x0, y0 = (W - larg) // 2, y + 50
     sombra = Image.new("L", (W, H), 0); ImageDraw.Draw(sombra).rounded_rectangle([x0 + 10, y0 + 24, x0 + larg + 10, y0 + c.height + 24], 28, fill=150)
     img.paste((0, 0, 0), (0, 0), sombra.filter(ImageFilter.GaussianBlur(28)))
