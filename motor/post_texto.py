@@ -7,6 +7,7 @@ S = 2
 W, H = 1080 * S, 1350 * S
 FD = "/usr/share/fonts/truetype/google-fonts/"
 F = lambda n, s: ImageFont.truetype(FD + n, int(s * S))
+FONTE_FOTO = "Foto: Bachrach / Wikimedia Commons"
 BRANCO, CINZA = (236, 236, 238), (125, 125, 132)
 MX = 70 * S
 
@@ -60,6 +61,8 @@ def card(texto, n, total, saida, foto=None):
             o = (ft.height - lim) // 2; ft = ft.crop((0, o, ft.width, o + lim))
         mk = Image.new("L", ft.size, 0); ImageDraw.Draw(mk).rounded_rectangle([0, 0, ft.width - 1, ft.height - 1], 28 * S, fill=255)
         img.paste(ft, (MX, y), mk)
+        if FONTE_FOTO:
+            d.text((MX + ft.width - 16 * S, y + ft.height - 14 * S), FONTE_FOTO, font=F("Poppins-Regular.ttf", 18), fill=(200, 200, 205), anchor="rd")
     if n > 1:
         d.text((W - MX, 80 * S), f"{n}/{total}", font=F("Poppins-Regular.ttf", 30), fill=CINZA, anchor="ra")
     img.save(saida, quality=95)
@@ -74,5 +77,5 @@ TXT = [
 if __name__ == "__main__":
     O = "/mnt/user-data/outputs/singular_friedman"
     for i, t in enumerate(TXT):
-        card(t, i + 1, len(TXT), f"{O}/{i+1}.png", foto="/home/claude/fotos/holerite.png" if i == 0 else None)
+        card(t, i + 1, len(TXT), f"{O}/{i+1}.png", foto="/home/claude/fotos/friedman.png" if i == 0 else None)
     print("ok")
